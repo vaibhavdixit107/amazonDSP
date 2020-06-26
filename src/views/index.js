@@ -1,0 +1,1 @@
+export {RoutesDetails} from './routesDetails'
