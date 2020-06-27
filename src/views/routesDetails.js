@@ -15,11 +15,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 const useRowStyles = makeStyles(theme => ({
     root: {
-    //   '& > *': {
-    //     borderBottom: 'unset',
-    //   },
+      '& > *': {
+        borderBottom: 'unset',
+      },
     },
     button: {
         display: 'flex',
@@ -28,6 +29,16 @@ const useRowStyles = makeStyles(theme => ({
       title: {
         flex: '1 1 100%',
       },
+      table:{
+        width:'70%' ,
+        marginLeft:'15%', 
+        marginRight:'15%',
+      },
+      td: {
+        background: 'red'
+      }
+
+      
   }));
   
 
@@ -47,11 +58,46 @@ const RoutesDetails = () =>{
     const [state, setState] = React.useState({
         columnsNonFICOException: [
           { title: 'Name', field: 'name' },
-          { title: 'Previous Day FICO', field: 'FICOResult'},
-          { title: 'Seatbelt', field: 'seatbelt' },
-          { title: 'Speeding', field: 'speeding' },
+          { title: 'Previous Day FICO', field: 'FICOResult',
+            render: rowData => {
+              let rating = rowData.FICOResult.split(' ')[1]
+              return(
+                
+
+
+                rating === 'AVERAGE' ? <Typography style={{ backgroundColor: '#ffeeba' }} gutterBottom={true}> {rowData.FICOResult}</Typography>:
+                rating === 'GREAT' ? <Typography style={{ backgroundColor: '#bee5eb' }} gutterBottom={true}> {rowData.FICOResult}</Typography>:
+                <Typography style={{ backgroundColor: '#c3e6cb' }} gutterBottom={true}> {rowData.FICOResult}</Typography>
+              )
+            }
+        
+        },
+          { title: 'Seatbelt', field: 'seatbelt',
+          render: rowData => {
+            return(
+              rowData.seatbelt === 0  ? 
+              <Typography style={{ backgroundColor: '#c3e6cb' }} gutterBottom={true}> {rowData.seatbelt}</Typography> : 
+              rowData.seatbelt === 1 ? <Typography style={{ backgroundColor: '#ffeeba' }} gutterBottom={true}> {rowData.seatbelt}</Typography> :
+              <Typography style={{ backgroundColor: "#f5c6cb"}}>{rowData.seatbelt}</Typography>
+            )
+            
+        }
+          },
+          { title: 'Speeding', field: 'speeding',
+          render: rowData => {
+            return(
+              rowData.speeding === 0  ?              
+              
+              <Typography style={{ backgroundColor: '#c3e6cb' }} gutterBottom={true}> {rowData.speeding}</Typography> : 
+              rowData.speeding === 1 ? <Typography style={{ backgroundColor: '#ffeeba' }} gutterBottom={true}> {rowData.speeding}</Typography> :
+              <Typography style={{ backgroundColor: "#f5c6cb"}} gutterBottom={true}>{rowData.speeding}</Typography>
+            )
+            
+        }
+          
+        },
           { title: 'Vehicle Tag', field: 'vehicleTag' },
-          { title: 'Action' },
+          // { title: 'Action', field: 'action.innerHTML' },
         ],
 
         columnsDVCRMissing: [
@@ -178,39 +224,46 @@ const RoutesDetails = () =>{
 
         if(driverPerfHistory.length > 0){
         return(
-            <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell align="right">Speeding</TableCell>
-            <TableCell align="right">Seatbelt</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {driverPerfHistory.map((row) => (
-            <TableRow key={row.date}>
-              <TableCell component="th" scope="row">
-                {row.date}
-              </TableCell>
-              <TableCell align="right">{row.events.SPEEDING_NON_FICO !== undefined ? row.events.SPEEDING_NON_FICO.eventCount : 0}</TableCell>
-              <TableCell align="right">{row.events.SEATBELT !== undefined ? row.events.SEATBELT.eventCount : 0}</TableCell>
-              
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table" size="medium">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date</TableCell>
+                  <TableCell align="right">Speeding</TableCell>
+                  <TableCell align="right">Seatbelt</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {driverPerfHistory.map((row) => (
+                  <TableRow key={row.date}>
+                    <TableCell component="th" scope="row">
+                      {row.date}
+                    </TableCell>
+                    <TableCell align="right" style={ row.events.SPEEDING_NON_FICO !== undefined && row.events.SPEEDING_NON_FICO.eventCount > 1 ? 
+                      {backgroundColor: '#f5c6cb'}:
+                      row.events.SPEEDING_NON_FICO !== undefined && row.events.SPEEDING_NON_FICO.eventCount > 0 ? {backgroundColor: '#c3e6cb'}
+                    : {backgroundColor: '#ffeeba'} }>{row.events.SPEEDING_NON_FICO !== undefined ? row.events.SPEEDING_NON_FICO.eventCount : 0}</TableCell>
+
+                    <TableCell align="right"
+                      style={ row.events.SEATBELT !== undefined && row.events.SEATBELT.eventCount > 1 ? 
+                        {backgroundColor: '#f5c6cb'}:
+                        row.events.SEATBELT !== undefined && row.events.SEATBELT.eventCount > 0 ? {backgroundColor: '#c3e6cb'}
+                      : {backgroundColor: '#ffeeba'} }
+                    >{row.events.SEATBELT !== undefined ? row.events.SEATBELT.eventCount : 0}</TableCell>
+                    
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )
-          }else {
-          return (
-            <Typography className={classes.title} variant="h5" id="tableTitle" component="div" align="center">
+      }else {
+        return (
+          <Typography className={classes.title} variant="h5" id="tableTitle" component="div" align="center">
             Previous Route History Not Available
           </Typography>
-              
-            
-          )
-          }
+        )
+      }
     }  
 
     
@@ -230,7 +283,22 @@ const RoutesDetails = () =>{
               console.log('row data', rowData)
             
             }}
-           
+
+            actions={[
+              {
+                
+                icon: 'save',
+                tooltip: 'Done button',
+                onClick: (event, rowData) => {
+                  // Do save operation
+                },
+                // isFreeAction: true
+                
+              }
+            ]}
+            options={{
+              actionsColumnIndex: -1
+            }}
 
               detailPanel={[
                 {

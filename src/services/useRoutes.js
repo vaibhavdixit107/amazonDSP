@@ -24,7 +24,7 @@ let out = {
     "exceptionType": ["SPEEDING_EVENT_1", "SEATBELT", "IDLING", "BACKUP", "ACCELERATION", "CORNERING", "BRAKING"]
   }
   
-let url = 'https://ox4xrzd1jc.execute-api.us-east-1.amazonaws.com/Prod/performance/Ondot';
+let url = 'https://ox4xrzd1jc.execute-api.us-east-1.amazonaws.com/Prod/performance/Ondot/exceptions';
 
 function useRoutes(){
     const dispatch = useDispatch()
@@ -119,6 +119,11 @@ function useRoutes(){
                 })
 
                 dataObj.FICOResult = FICOResult
+                // var button = document.createElement("BUTTON");   // Create a <button> element
+                // button.innerHTML = "CLICK ME"; 
+                
+                // document.body.appendChild(button);  
+                // dataObj.action = button
 
 
 
