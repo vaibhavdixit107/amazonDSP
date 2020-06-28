@@ -22,6 +22,11 @@ const Routes = () => {
                 exact
                 path="/todayPerformance"
             />
+            <Route
+                component={ScoreCard}
+                exact
+                path="/scoreCard"
+            />
       </Switch>
     )
 }

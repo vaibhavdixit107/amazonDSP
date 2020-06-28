@@ -60,11 +60,11 @@ const pages = [
     href: '/todayPerformance',
     
 },
-//   {
-//     title: 'Download Log Forms',
-//     href: '/download',
-//     icon: <PictureAsPdfIcon />,
-//   },
+  {
+    title: 'Score Card',
+    href: '/scoreCard',
+    
+  },
 ]  
 
 const CustomRouterLink = forwardRef((props, ref) => (
