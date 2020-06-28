@@ -10,7 +10,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-
+import Topbar from '../components/topbar'
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -27,6 +27,8 @@ const ScoreCard = () => {
     const [state, setState] = React.useState({expanded: true});
     //const { fetchRoutesData, fetchPerformanceData } = useRoutes()
     return (
+        <div>
+        <Topbar />
         <TableContainer component={Paper}>
             <Table aria-label="simple table" size="medium">
                 <TableHead>
@@ -255,6 +257,7 @@ const ScoreCard = () => {
                 </TableBody>
             </Table>
         </TableContainer>
+        </div>
     )
 }
 
