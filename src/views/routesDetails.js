@@ -31,18 +31,15 @@ const useRowStyles = makeStyles(theme => ({
       },
       table:{
         width:'70%' ,
-        marginLeft:'15%', 
+        marginLeft:'15%',
         marginRight:'15%',
-      },
-      td: {
-        background: 'red'
       }
 
-      
-  }));
-  
 
-  
+  }));
+
+
+
 
 
 const RoutesDetails = () =>{
@@ -52,50 +49,25 @@ const RoutesDetails = () =>{
     const driverPerf = useSelector(state => state.response.driverPerf)
     const dvcrMissing = useSelector(state => state.response.dvcrMissing)
     const classes = useRowStyles();
-    
 
-    
+
+    const getStyleForSpeeding = (count) => {
+      if (count >= 2) {
+        return {'backgroundColor':'red','color':'white'}
+      } else if (count >= 1) {
+        return {'backgroundColor':'#f5c6cb'}
+      } else {
+        return {'backgroundColor':'#c3e6cb'}
+      }
+    }
+
+
     const [state, setState] = React.useState({
         columnsNonFICOException: [
           { title: 'Name', field: 'name' },
-          { title: 'Previous Day FICO', field: 'FICOResult',
-            render: rowData => {
-              let rating = rowData.FICOResult.split(' ')[1]
-              return(
-                
-
-
-                rating === 'AVERAGE' ? <Typography style={{ backgroundColor: '#ffeeba' }} gutterBottom={true}> {rowData.FICOResult}</Typography>:
-                rating === 'GREAT' ? <Typography style={{ backgroundColor: '#bee5eb' }} gutterBottom={true}> {rowData.FICOResult}</Typography>:
-                <Typography style={{ backgroundColor: '#c3e6cb' }} gutterBottom={true}> {rowData.FICOResult}</Typography>
-              )
-            }
-        
-        },
-          { title: 'Seatbelt', field: 'seatbelt',
-          render: rowData => {
-            return(
-              rowData.seatbelt === 0  ? 
-              <Typography style={{ backgroundColor: '#c3e6cb' }} gutterBottom={true}> {rowData.seatbelt}</Typography> : 
-              rowData.seatbelt === 1 ? <Typography style={{ backgroundColor: '#ffeeba' }} gutterBottom={true}> {rowData.seatbelt}</Typography> :
-              <Typography style={{ backgroundColor: "#f5c6cb"}}>{rowData.seatbelt}</Typography>
-            )
-            
-        }
-          },
-          { title: 'Speeding', field: 'speeding',
-          render: rowData => {
-            return(
-              rowData.speeding === 0  ?              
-              
-              <Typography style={{ backgroundColor: '#c3e6cb' }} gutterBottom={true}> {rowData.speeding}</Typography> : 
-              rowData.speeding === 1 ? <Typography style={{ backgroundColor: '#ffeeba' }} gutterBottom={true}> {rowData.speeding}</Typography> :
-              <Typography style={{ backgroundColor: "#f5c6cb"}} gutterBottom={true}>{rowData.speeding}</Typography>
-            )
-            
-        }
-          
-        },
+          { title: 'Previous Day FICO', field: 'FICOResult'},
+          { title: 'Seatbelt', field: 'seatbelt', cellStyle: colData => (getStyleForSpeeding(colData-1))},
+          { title: 'Speeding', field: 'speeding', cellStyle: colData => (getStyleForSpeeding(colData))},
           { title: 'Vehicle Tag', field: 'vehicleTag' },
           // { title: 'Action', field: 'action.innerHTML' },
         ],
@@ -115,7 +87,7 @@ const RoutesDetails = () =>{
             { title: 'Vehicle Tag', field: 'vehicleTag' },
           ],
 
-          
+
 
 
     });
@@ -124,14 +96,14 @@ const RoutesDetails = () =>{
 
     // useEffect(()=>{
     //     fetchRoutesData()
-        
+
     // },[fetchRoutesData])
 
     useEffect(()=>{
         fetchPerformanceData()
     },[])
 
-    
+
     const handleOnClick = (e) => {
         console.log('Inside on click',e)
     }
@@ -140,8 +112,8 @@ const RoutesDetails = () =>{
     //     const { row } = props;
     //     const [open, setOpen] = React.useState(false);
     //     const classes = useRowStyles();
-        
-    //     let score = '' 
+
+    //     let score = ''
     //     let rating = ''
 
         // Object.keys(driverPerf).map(id => {
@@ -157,7 +129,7 @@ const RoutesDetails = () =>{
     //             <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
     //               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
     //             </IconButton>
-                
+
     //           </TableCell>
     //           <TableCell component="th" scope="row">
     //           {row[0].driverName}
@@ -239,18 +211,12 @@ const RoutesDetails = () =>{
                     <TableCell component="th" scope="row">
                       {row.date}
                     </TableCell>
-                    <TableCell align="right" style={ row.events.SPEEDING_NON_FICO !== undefined && row.events.SPEEDING_NON_FICO.eventCount > 1 ? 
-                      {backgroundColor: '#f5c6cb'}:
-                      row.events.SPEEDING_NON_FICO !== undefined && row.events.SPEEDING_NON_FICO.eventCount > 0 ? {backgroundColor: '#c3e6cb'}
-                    : {backgroundColor: '#ffeeba'} }>{row.events.SPEEDING_NON_FICO !== undefined ? row.events.SPEEDING_NON_FICO.eventCount : 0}</TableCell>
+                    <TableCell align="right" style={getStyleForSpeeding(row.events.SPEEDING_NON_FICO !== undefined ? row.events.SPEEDING_NON_FICO.eventCount : 0)}>{row.events.SPEEDING_NON_FICO !== undefined ? row.events.SPEEDING_NON_FICO.eventCount : 0}</TableCell>
 
                     <TableCell align="right"
-                      style={ row.events.SEATBELT !== undefined && row.events.SEATBELT.eventCount > 1 ? 
-                        {backgroundColor: '#f5c6cb'}:
-                        row.events.SEATBELT !== undefined && row.events.SEATBELT.eventCount > 0 ? {backgroundColor: '#c3e6cb'}
-                      : {backgroundColor: '#ffeeba'} }
+                      style={getStyleForSpeeding(row.events.SPEEDING_NON_FICO !== undefined ? row.events.SPEEDING_NON_FICO.eventCount - 1 : 0)}
                     >{row.events.SEATBELT !== undefined ? row.events.SEATBELT.eventCount : 0}</TableCell>
-                    
+
                   </TableRow>
                 ))}
               </TableBody>
@@ -264,11 +230,11 @@ const RoutesDetails = () =>{
           </Typography>
         )
       }
-    }  
+    }
 
-    
-  
-    
+
+
+
     return(
 
 
@@ -278,22 +244,22 @@ const RoutesDetails = () =>{
             title="Speeding and Seatbelt Exceptions"
             columns={state.columnsNonFICOException}
             data={nonFicoExceptions}
-            
+
             onRowClick={(event, rowData, toggleDetailPanel) => {
               console.log('row data', rowData)
-            
+
             }}
 
             actions={[
               {
-                
+
                 icon: 'save',
                 tooltip: 'Done button',
                 onClick: (event, rowData) => {
-                  // Do save operation
+                  console.log(rowData);
                 },
                 // isFreeAction: true
-                
+
               }
             ]}
             options={{
@@ -306,14 +272,14 @@ const RoutesDetails = () =>{
                   render: rowData => {
                     return (
                         <NoDataComponent id={rowData.driverId} />
-                   
+
                     )
                   },
                 },
-                
+
               ]}
-            
-           
+
+
           />
 
 <MaterialTable
@@ -323,12 +289,12 @@ const RoutesDetails = () =>{
             data={FicoExceptions}
             onRowClick={(event, rowData, toggleDetailPanel) => {
               console.log('row data', rowData)
-            
+
             }}
-            
+
             onChangeRowsPerPage={console.log('jkjfkd')}
             onChangePage={console.log('jkjfkd')}
-          />   
+          />
 
           <MaterialTable
             // style={{boxShadow: '0px 0px'}}
@@ -337,16 +303,16 @@ const RoutesDetails = () =>{
             data={dvcrMissing}
             onRowClick={(event, rowData, toggleDetailPanel) => {
               console.log('row data', rowData)
-           
+
             }}
-            
+
             onChangeRowsPerPage={console.log('jkjfkd')}
             onChangePage={console.log('jkjfkd')}
-          />        
+          />
 
-</div>         
+</div>
 
-          
+
     )
 }
 
@@ -356,10 +322,10 @@ export default RoutesDetails
           Speeding and Seatbelt Exception
         </Typography>
     <TableContainer component={Paper}>
-            
+
             <Table aria-label="collapsible table">
                 <TableHead >
-                   
+
                 <TableRow>
                     <TableCell />
                     <TableCell>Driver Name</TableCell>
@@ -372,12 +338,12 @@ export default RoutesDetails
                 </TableHead>
                 <TableBody>
                 {
-                    
+
                 Object.keys(nonFicoExceptions).length > 0 ? Object.values(nonFicoExceptions).map((row) => (
                     row[0].exceptions > 0 || row[1].exceptions > 0 ? <Row row={row} />: ''
-                    
-                )) : 
-                
+
+                )) :
+
                 <NoDataComponent />
                 }
                 </TableBody>
@@ -389,10 +355,10 @@ export default RoutesDetails
         </Typography>
 
     <TableContainer component={Paper}>
-            
+
             <Table aria-label="collapsible table">
                 <TableHead >
-                   
+
                 <TableRow>
                     <TableCell />
                     <TableCell>Driver Name</TableCell>
@@ -409,9 +375,9 @@ export default RoutesDetails
                 <TableBody>
                  {Object.keys(FicoExceptions).length > 0 ? Object.values(FicoExceptions).map((row) => (
                     row[0].exceptions > 0 || row[1].exceptions > 0 ? <Row row={row} />: ''
-                    
+
                 )) : <NoDataComponent />
-                } 
+                }
                 </TableBody>
             </Table>
     </TableContainer>
@@ -421,10 +387,10 @@ export default RoutesDetails
         </Typography>
 
     <TableContainer component={Paper}>
-            
+
             <Table aria-label="collapsible table">
                 <TableHead >
-                   
+
                 <TableRow>
                     <TableCell>Driver Name</TableCell>
                 </TableRow>
@@ -436,9 +402,9 @@ export default RoutesDetails
                         <TableCell component="th" scope="row">
                             {row.amazonName}
                         </TableCell>
-                        
+
                         </TableRow>
-                    )): 
+                    )):
                     <NoDataComponent />}
                 </TableBody>
             </Table>
