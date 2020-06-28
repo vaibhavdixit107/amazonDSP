@@ -1,6 +1,7 @@
 import React from 'react'
 import { Switch, Redirect, Route } from 'react-router-dom'
 import  RoutesDetails   from '../views/routesDetails'
+import  ResuceAdvice   from '../views/rescueAdvice'
 import  ScoreCard   from '../views/scorecard'
 
 const Routes = () => {
@@ -12,9 +13,14 @@ const Routes = () => {
                 path="/"
             />
             <Route
-                component={ScoreCard}
+                component={ResuceAdvice}
                 exact
-                path="/current"
+                path="/rescueAdvice"
+            />
+            <Route
+                component={RoutesDetails}
+                exact
+                path="/todayPerformance"
             />
       </Switch>
     )

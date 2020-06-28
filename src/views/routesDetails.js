@@ -16,6 +16,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import Topbar from '../components/topbar'
 const useRowStyles = makeStyles(theme => ({
     root: {
       '& > *': {
@@ -61,7 +62,7 @@ const RoutesDetails = () =>{
       }
     }
 
-
+    
     const [state, setState] = React.useState({
         columnsNonFICOException: [
           { title: 'Name', field: 'name' },
@@ -191,7 +192,7 @@ const RoutesDetails = () =>{
     //     );
     //   }
 
-    const NoDataComponent = (props) => {
+    const NonFICODataComponent = (props) => {
         let driverPerfHistory = driverPerf[props.id].slice(3)
 
         if(driverPerfHistory.length > 0){
@@ -232,6 +233,69 @@ const RoutesDetails = () =>{
       }
     }
 
+    const FICODataComponent = (props) => {
+      let driverPerfHistory = driverPerf[props.id].slice(3)
+
+      if(driverPerfHistory.length > 0){
+      return(
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table" size="medium">
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell align="right">FICO</TableCell>
+                <TableCell align="right">Cornering</TableCell>
+                <TableCell align="right">Distraction</TableCell>
+                <TableCell align="right">Acceleration</TableCell>
+                <TableCell align="right">Speeding</TableCell>
+                <TableCell align="right">Braking</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {driverPerfHistory.map((row) => (
+                <TableRow key={row.date}>
+                  <TableCell component="th" scope="row">
+                    {row.date}
+                  </TableCell>
+                  <TableCell align="right" 
+                  style={getStyleForSpeeding(row.scores.FICO !== undefined ? row.scores.FICO.score : 0)}
+                  >{row.scores.FICO !== undefined ? row.scores.FICO.score + '(' + row.scores.FICO.rating + ')' : 0}</TableCell>
+
+                  <TableCell align="right"
+                    // style={getStyleForSpeeding(row.scores.CORNERING !== undefined ? row.scores.CORNERING.score - 1 : 0)}
+                  >{row.scores.CORNERING !== undefined ? row.scores.CORNERING.score + '(' + row.scores.CORNERING.rating + ')' : 0}</TableCell>
+
+                  <TableCell align="right"
+                    // style={getStyleForSpeeding(row.scores.CORNERING !== undefined ? row.scores.CORNERING.score - 1 : 0)}
+                  >{row.scores.DISTRACTION !== undefined ? row.scores.DISTRACTION.score + '(' + row.scores.DISTRACTION.rating + ')' : 0}</TableCell>
+
+                  <TableCell align="right"
+                    // style={getStyleForSpeeding(row.scores.CORNERING !== undefined ? row.scores.CORNERING.score - 1 : 0)}
+                  >{row.scores.ACCELERATION !== undefined ? row.scores.ACCELERATION.score + '(' + row.scores.ACCELERATION.rating + ')' : 0}</TableCell>
+
+                  <TableCell align="right"
+                    // style={getStyleForSpeeding(row.scores.CORNERING !== undefined ? row.scores.CORNERING.score - 1 : 0)}
+                  >{row.scores.SPEEDING !== undefined ? row.scores.SPEEDING.score + '(' + row.scores.SPEEDING.rating + ')' : 0}</TableCell>
+
+                  <TableCell align="right"
+                    // style={getStyleForSpeeding(row.scores.CORNERING !== undefined ? row.scores.CORNERING.score - 1 : 0)}
+                  >{row.scores.BRAKING !== undefined ? row.scores.BRAKING.score + '(' + row.scores.BRAKING.rating + ')' : 0}</TableCell>
+
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )
+    }else {
+      return (
+        <Typography className={classes.title} variant="h5" id="tableTitle" component="div" align="center">
+          Previous Route History Not Available
+        </Typography>
+      )
+    }
+  }
+
 
 
 
@@ -239,6 +303,7 @@ const RoutesDetails = () =>{
 
 
 <div>
+  <Topbar />
 <MaterialTable
             // style={{boxShadow: '0px 0px'}}
             title="Speeding and Seatbelt Exceptions"
@@ -271,7 +336,7 @@ const RoutesDetails = () =>{
                   tooltip: 'Show Name',
                   render: rowData => {
                     return (
-                        <NoDataComponent id={rowData.driverId} />
+                        <NonFICODataComponent id={rowData.driverId} />
 
                     )
                   },
@@ -291,6 +356,34 @@ const RoutesDetails = () =>{
               console.log('row data', rowData)
 
             }}
+            actions={[
+              {
+
+                icon: 'save',
+                tooltip: 'Done button',
+                onClick: (event, rowData) => {
+                  console.log(rowData);
+                },
+                // isFreeAction: true
+
+              }
+            ]}
+            options={{
+              actionsColumnIndex: -1
+            }}
+
+              detailPanel={[
+                {
+                  tooltip: 'Show Name',
+                  render: rowData => {
+                    return (
+                        <FICODataComponent id={rowData.driverId} />
+
+                    )
+                  },
+                },
+
+              ]}
 
             onChangeRowsPerPage={console.log('jkjfkd')}
             onChangePage={console.log('jkjfkd')}

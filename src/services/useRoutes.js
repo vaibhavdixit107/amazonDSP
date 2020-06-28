@@ -158,6 +158,7 @@ function useRoutes(){
                 dataObj.idling = e[4].exceptions
                 dataObj.name = e[0].driverName
                 dataObj.vehicleTag = e[0].vehicle.vehicleTag
+                dataObj.driverId = e[0].driverId
                 
                 Object.keys(driverPerf).map(id => {
                     if(id === e[0].driverId){
